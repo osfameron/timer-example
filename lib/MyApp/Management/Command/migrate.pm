@@ -35,6 +35,7 @@ This script is a wrapper around dbic-migrate, but also passes the schema from
 the OX application as default.
 
     bin/manage migrate help  # to see the options for the script
+    dbic-migration help
 
 =cut
 

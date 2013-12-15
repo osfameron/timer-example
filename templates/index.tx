@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><: $title :></title>
+  </head>
+  <body>
+    <h1>Hello <: $title :></h1>
+
+: if( $error ) {
+    <h2><span style="background: red; border: 1px solid black; padding: 5px">
+        <: $error :>
+    </span></h2>
+: }
+    
+  </body>
+</html>

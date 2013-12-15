@@ -2,6 +2,8 @@ package MyApp;
 use OX;
 use MyApp::Schema;
 
+our $VERSION = 0.001;
+
 has dsn => (
     is => 'ro',
     isa => 'Str',
@@ -27,13 +29,34 @@ has model => (
     },
 );
 
-our $VERSION = 0.001;
+has root_controller => (
+    is    => 'ro',
+    isa   => 'MyApp::Controller::Root',
+    infer => 1,
+
+);
+
+has view => (
+    is => 'ro',
+    isa => 'Text::Xslate',
+    dependencies => {
+        cache_dir => 'cache_dir',
+        path      => 'template_root',
+    },
+);
+
+has cache_dir     => ( is => 'ro' , isa => 'Str' , required => 1, default => 'cache_dir' );
+has template_root => ( is => 'ro' , isa => 'Str' , required => 1, default => 'templates' );
+
+router as {
+    route '/'       => 'root_controller.index';
+};
 
 1;
 
 =head1 NAME
  
-MyApp - playing with DBIx::Class::Migration
+MyApp - playing with OX and DBIx::Class::Migration
  
 =head1 AUTHOR
  
