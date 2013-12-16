@@ -1,8 +1,10 @@
 package MyApp::Management::Command::test;
 use Moose;
-use MyApp;
 use MyApp::Management -command;
 use App::ForkProve;
+use Test::PostgreSQL;
+use lib 't/lib';
+use MyApp::Test;
 
 sub description {
     'wrapper around prove';
@@ -11,7 +13,18 @@ sub description {
 sub execute {
     my ($self, $opt, $args) = @_;
 
-    shift @ARGV;
+    # remove the 'test' parameter, as we're passing on to other scripts
+    shift @ARGV; 
+
+    {
+        my $app = MyApp::Test->new();
+        $app->migration->install;
+        # TODO: populate fixtures here.
+
+        # we're forking off children to run tests, so we pass the DSN via an ENV
+        # var (TODO: cleaner way of doing this?)
+        $ENV{MYAPP_TEST_DSN} = $app->dsn;
+    }
 
     # if right-hand argument is a file, then assume we are running a single test
     if (@ARGV and -f $ARGV[-1]) {

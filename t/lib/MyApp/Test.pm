@@ -1,14 +1,31 @@
 package MyApp::Test;
-use Moose;
+use OX;
 extends 'MyApp';
 
 our $VERSION = 0.001;
 
-# for tests, we override the DSN (this will eventually use migrations)
 has dsn => (
     is => 'ro',
     isa => 'Str',
-    value => 'dbi:Pg:dbname=myapp_test',
+    block => sub {
+        my ($s, $self) = @_;
+        return $ENV{MYAPP_TEST_DSN} || $self->test_postgresql->dsn;
+        # $ENV{MYAPP_TEST_DSN} || 'dbi:Pg:dbname=myapp_test';
+    },
+);
+
+has test_postgresql => (
+    is => 'ro',
+    isa => 'Test::PostgreSQL',
+    lifecycle => 'Singleton',
+);
+
+has migration => (
+    is => 'ro',
+    isa => 'DBIx::Class::Migration',
+    dependencies => {
+        schema => 'model',
+    },
 );
 
 1;
