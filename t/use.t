@@ -3,7 +3,7 @@
 use Test::Most;
 
 BEGIN {
-    use_ok 'MyApp';
+    use_ok 'MyApp::Test';
     use_ok 'MyApp::Schema';
 }
 

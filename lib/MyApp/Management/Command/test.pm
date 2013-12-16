@@ -13,13 +13,32 @@ sub execute {
 
     shift @ARGV;
 
-    $ENV{PERL_FORKPROVE_IGNORE} = 'no-preload';
-    App::ForkProve->run(
-        '-Mt::Preload',
-        @ARGV,
-        '-lr',
-        't',
-    );
+    # if right-hand argument is a file, then assume we are running a single test
+    if (@ARGV and -f $ARGV[-1]) {
+
+        # oddly -t STDOUT is suppressed at some point in exec'd test, so
+        # we override for Test::Pretty's benefit
+        $ENV{PERL_TEST_PRETTY_ENABLED}++; 
+        
+        system( 'perl',
+            '-MTest::Pretty', # run pretty tests
+            '-Ilib',          # add ./lib
+            '-It/lib',        # add ./t/lib
+            @ARGV,
+        );
+    }
+
+    # otherwise we run a recursive 'prove' over 't' or a subdirectory
+    else {
+        $ENV{PERL_FORKPROVE_IGNORE} = 'no-preload';
+        App::ForkProve->run(
+            '-l',           # add ./lib
+            '-It/lib',      # add ./t/lib
+            '-MPreload',    # pre-load common modules for speed
+            '-r',           # run recursively
+            @ARGV,
+        );
+    }
 }
 
 =head1 NAME
@@ -47,8 +66,7 @@ This script is a thin wrapper around App::ForkProve.  We do the following:
 
 If any tests error, you can run them individually to see what happened with
 
-    perl -Ilib t/foo.t
-    perl -Ilib -MTest::Pretty  t/foo.t   # prettier tests
+    bin/manage test t/foo.t
 
 =cut
 

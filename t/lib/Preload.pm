@@ -1,4 +1,4 @@
-package t::Preload;
+package Preload;
 use strict; use warnings;
 
 # use Moose; # errors about role conflict, in any case is loaded via OX
