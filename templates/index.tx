@@ -6,6 +6,8 @@
   <body>
     <h1>Hello <: $title :></h1>
 
+    There are <: $count :> records!
+
 : if( $error ) {
     <h2><span style="background: red; border: 1px solid black; padding: 5px">
         <: $error :>

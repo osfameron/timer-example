@@ -20,13 +20,4 @@ has view => (
   required => 1 ,
 );
 
-sub index {
-  my( $self , $req ) = @_;
-
-  return $self->render( 'index.tx' , {
-    title => $self->title ,
-    # user  => $req->session->{user_id} ,
-  });
-}
-
 1;
